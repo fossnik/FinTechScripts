@@ -29,6 +29,6 @@ while read pair; do
 done < pairs.btc.list
 
 # perform final query
-curl --silent ${QUERY%-} | sed -e 's@},"@},\n"@g' >> response.json
+curl --silent ${QUERY%-} | sed -e 's@},"@},\n"@g' -e 's/^.//'>> response.json
 
 printf "Process Completed !\n> See file 'response.json'\n"
