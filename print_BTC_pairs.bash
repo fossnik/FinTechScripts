@@ -6,7 +6,7 @@ BASE="BTC"
 printf "# Fetching pairs from yobit.net/en/market/ to file 'pairs.btc.list'\n"
 
 # identify and extract pertinent data from html (using awk)
-curl --silent https://yobit.net/en/market/ | awk --field-separator='<|>' '$5~/\/'"$BASE"'/ { print tolower($5) }' > pairs.btc.list
+curl --silent https://yobit.net/en/market/ | awk --field-separator='<|>' '$5~/\/'"$BASE"'/ { print tolower($5) }' > pairs.${BASE,,}.list
 
 # create response.json file with initital JSON bracket
 echo '{' > response.json
@@ -29,7 +29,7 @@ while read pair; do
     # prepare for the next group of pairs by resetting query string
     QUERY="https://yobit.net/api/3/ticker/"
   fi
-done < pairs.btc.list
+done < pairs.${BASE,,}.list
 
 # perform final query
 curl --silent ${QUERY%-} | sed -e 's@},"@},\n"@g' -e 's/^.//' >> response.json
