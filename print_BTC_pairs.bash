@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# available base pairs - BTC ETH LTC DOGE RUR USD waves
+# available base pairs - BTC ETH LTC DOGE RUR USD WAVES
 BASE="BTC"
 
 printf "Fetching pairs from yobit.net/en/market/ to file 'pairs.btc.list'\n"
