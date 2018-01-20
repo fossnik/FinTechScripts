@@ -4,6 +4,8 @@
 BASE="BTC"
 
 printf "# Fetching pairs from yobit.net/en/market/ to file 'pairs.btc.list'\n"
+
+# identify and extract pertinent data from html (using awk)
 curl --silent https://yobit.net/en/market/ | awk --field-separator='<|>' '$5~/\/'"$BASE"'/ { print tolower($5) }' > pairs.btc.list
 
 # Create response file with initital JSON bracket
