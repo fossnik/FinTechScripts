@@ -1,29 +1,32 @@
 #!/bin/bash
 
+# available base pairs - BTC ETH LTC DOGE RUR USD waves
+BASE="BTC"
+
 printf "Fetching pairs from yobit.net/en/market/ to file 'pairs.btc.list'\n"
-curl --silent https://yobit.net/en/market/ | awk --field-separator=">|<"  '$5~/\/BTC/ { print tolower($5) }' > pairs.btc.list
+curl --silent https://yobit.net/en/market/ | awk --field-separator='<|>' '$5~/\/'"$BASE"'/ { print tolower($5) }' > pairs.btc.list
 
 QUERY="https://yobit.net/api/3/ticker/"
 
-# clear the output file and start JSON
-echo "{" > response.json
+# Create response file with initital JSON bracket
+echo '{' > response.json
 
-printf "Building and Executing JSON queries\n"
+printf "Constructing and Executing JSON queries\n"
 while read pair; do
   # limit length of URI query to 512 characters
   if [ ${#QUERY} -le 512 ]
   then
-    # parameter subsistution swaps /btc for _btc-
-    QUERY=$QUERY${pair/\/btc/_btc-}
+    # Constructing API query string using bash parameter expansion
+    QUERY=$QUERY${pair/\/${BASE,,}/_${BASE,,}-}
   else
-    printf "Query %s\n" $((++QUERYITERATION))
+    printf " Query %s\n" $((++QUERYITERATION))
     # query API with curl
-    # remove trailing dash via bash parameter modification
+    # remove trailing dash via bash parameter substitution
     # insert newlines using sed for improved readability
-    # rm first character and replace the last with ",\n" for JSON consistancy
+    # remove inital '{' bracket, and terminate with ",\n" for JSON consistancy
     curl --silent ${QUERY%-} | sed -e 's@},"@},\n"@g' -e 's/^.//' -e 's/.$/,\n/' >> response.json
 
-    # start afresh for a new query
+    # start afresh with a new query
     QUERY="https://yobit.net/api/3/ticker/"
   fi
 done < pairs.btc.list
@@ -31,4 +34,4 @@ done < pairs.btc.list
 # perform final query
 curl --silent ${QUERY%-} | sed -e 's@},"@},\n"@g' -e 's/^.//'>> response.json
 
-printf "Process Completed !\n> See file 'response.json'\n"
+printf "Process Completed !\n> See file 'response.json' <\n"
