@@ -15,8 +15,7 @@ printf "# Constructing and Executing JSON queries\n"
 while read pair; do
   let $((++TOTALPAIRS))
   # limit length of URI query to 512 characters
-  if [ ${#QUERY} -le 512 ]
-  then
+  if [ ${#QUERY} -le 512 ]; then
     # Constructing API query string using bash parameter expansion
     QUERY=$QUERY${pair/\/${BASE,,}/_${BASE,,}-}
   else
