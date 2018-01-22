@@ -1,4 +1,5 @@
 #!/bin/bash
+# Works in Bash 4 in Linux, but Still Seem to be Some Macintosh Issues.
 
 # available base pairs - BTC ETH LTC DOGE RUR USD WAVES
 BASE="BTC"
